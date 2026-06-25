@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUREA — Shopping en direct</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --ink:#0B1F3A;
+  --ink-2:#0A5C5C;
+  --porcelain:#FAF7F2;
+  --paper:#FFFFFF;
+  --teal:#0F7C7C;
+  --teal-dark:#0A5C5C;
+  --coral:#FF5F4D;
+  --coral-dark:#E14735;
+  --gold:#D9A653;
+  --charcoal:#1B1B1B;
+  --grey:#6B7280;
+  --line: rgba(11,31,58,0.12);
+  --radius: 14px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--porcelain);
+  color:var(--charcoal);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Big Shoulders Display',sans-serif;font-weight:800;letter-spacing:0.01em;margin:0;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+img{display:block;max-width:100%;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+:focus-visible{outline:3px solid var(--coral);outline-offset:2px;border-radius:4px;}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
+
+/* ---------- TICKER ---------- */
+.ticker{
+  background:var(--ink);
+  color:#fff;
+  overflow:hidden;
+  white-space:nowrap;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  letter-spacing:0.02em;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.ticker__track{
+  display:inline-flex;
+  gap:48px;
+  padding-left:48px;
+  will-change:transform;
+}
+@media (prefers-reduced-motion: no-preference){
+  .ticker__track{ animation:scrollTicker 32s linear infinite; }
+}
+.ticker:hover .ticker__track{ animation-play-state:paused; }
+@keyframes scrollTicker{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+.ticker__item{display:inline-flex;align-items:center;gap:8px;color:#E9EEF2;}
+.dot-live{
+  width:7px;height:7px;border-radius:50%;background:var(--coral);
+  box-shadow:0 0 0 0 rgba(255,95,77,0.7);
+  animation:pulseDot 1.6s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce){ .dot-live{animation:none;} }
+@keyframes pulseDot{
+  0%{box-shadow:0 0 0 0 rgba(255,95,77,0.55);}
+  70%{box-shadow:0 0 0 6px rgba(255,95,77,0);}
+  100%{box-shadow:0 0 0 0 rgba(255,95,77,0);}
+}
+
+/* ---------- HEADER ---------- */
+header.site{
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;
+}
+.header__bar{
+  display:flex;align-items:center;gap:24px;
+  padding:16px 24px;max-width:1240px;margin:0 auto;
+}
+.logo{
+  font-family:'Big Shoulders Display',sans-serif;
+  font-weight:900;font-size:28px;color:var(--ink);
+  display:flex;align-items:baseline;gap:8px;flex-shrink:0;
+}
+.logo span{
+  font-family:'Inter',sans-serif;font-weight:600;font-size:10px;
+  letter-spacing:0.14em;color:var(--teal);text-transform:uppercase;
+}
+.search{
+  flex:1;display:flex;align-items:center;background:var(--porcelain);
+  border:1px solid var(--line);border-radius:999px;padding:10px 16px;gap:10px;
+  max-width:520px;
+}
+.search input{
+  border:none;background:none;outline:none;width:100%;font-size:14px;color:var(--charcoal);
+  font-family:'Inter',sans-serif;
+}
+.search svg{flex-shrink:0;opacity:0.55;}
+.header__actions{display:flex;align-items:center;gap:18px;flex-shrink:0;}
+.icon-btn{
+  display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);
+  position:relative;padding:6px;
+}
+.cart-count{
+  background:var(--coral);color:#fff;font-family:'IBM Plex Mono',monospace;
+  font-size:11px;font-weight:600;border-radius:999px;padding:1px 6px;min-width:18px;text-align:center;
+  transition:transform 0.2s ease;
+}
+.cart-count.bump{transform:scale(1.35);}
+
+/* ---------- NAV ---------- */
+nav.cats{
+  background:var(--ink);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+nav.cats::-webkit-scrollbar{display:none;}
+.cats__track{
+  display:flex;gap:6px;padding:10px 24px;max-width:1240px;margin:0 auto;white-space:nowrap;
+}
+.cats__pill{
+  font-size:13px;font-weight:600;color:#D9E3E3;padding:8px 16px;border-radius:999px;
+  transition:background 0.15s ease, color 0.15s ease;
+}
+.cats__pill:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.cats__pill.active{background:var(--teal);color:#fff;}
+
+/* ---------- CLEARANCE FILTER BANNER ---------- */
+.filter-banner{
+  display:none;background:var(--gold);color:var(--ink);font-weight:600;font-size:13.5px;
+  text-align:center;padding:10px 16px;
+}
+.filter-banner.show{display:block;}
+.filter-banner button{text-decoration:underline;font-weight:700;}
+body.filter-clearance .card:not(.is-clearance){display:none;}
+
+/* ---------- HERO ---------- */
+.hero{padding:40px 0 28px;}
+.hero__inner{
+  display:grid;grid-template-columns:1fr;gap:28px;
+  background:linear-gradient(135deg,var(--ink) 0%, var(--ink-2) 100%);
+  border-radius:20px;color:#fff;padding:32px;position:relative;overflow:hidden;
+}
+.hero__inner::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 20%, rgba(217,166,83,0.25), transparent 55%);
+  pointer-events:none;
+}
+@media(min-width:860px){
+  .hero__inner{grid-template-columns:0.9fr 1.1fr;align-items:center;padding:44px;}
+}
+.hero__media{position:relative;}
+.hero__media img{
+  width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;
+  box-shadow:0 24px 48px rgba(0,0,0,0.35);
+}
+.hero__badge{
+  position:absolute;top:14px;left:14px;background:var(--coral);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:0.06em;padding:6px 12px;border-radius:999px;
+}
+.hero__info{position:relative;z-index:1;}
+.hero__eyebrow{
+  display:flex;align-items:center;gap:8px;color:var(--gold);font-size:12.5px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;
+}
+.hero__title{font-size:clamp(28px,4vw,44px);line-height:1.05;margin-bottom:14px;}
+.hero__price{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.hero__price .now{font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:600;color:var(--gold);}
+.hero__price .old{font-family:'IBM Plex Mono',monospace;font-size:16px;text-decoration:line-through;opacity:0.55;}
+.hero__pay{font-size:13px;opacity:0.85;margin-bottom:18px;}
+.hero__timer{
+  display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:10px 16px;margin-bottom:22px;
+}
+.hero__timer .label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;}
+.hero__timer .clock{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:#fff;}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--coral);color:#fff;
+  font-weight:700;font-size:14.5px;padding:14px 26px;border-radius:999px;
+  transition:transform 0.15s ease, background 0.15s ease;
+}
+.btn:hover{background:var(--coral-dark);transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+
+/* ---------- CATEGORY RAIL ---------- */
+.railwrap{padding:8px 0 36px;}
+.rail{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media(min-width:720px){.rail{grid-template-columns:repeat(8,1fr);}}
+.rail__item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:none;text-align:center;
+}
+.rail__circle{
+  width:64px;height:64px;border-radius:50%;background:var(--paper);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:24px;transition:border-color 0.15s ease, transform 0.15s ease;
+}
+.rail__item:hover .rail__circle{border-color:var(--teal);transform:translateY(-2px);}
+.rail__label{font-size:12px;font-weight:600;color:var(--ink);}
+
+/* ---------- FLEXPAY BAR ---------- */
+.flexbar{
+  background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  display:flex;align-items:center;gap:14px;padding:16px 22px;margin-bottom:40px;
+}
+.flexbar__icon{
+  width:38px;height:38px;border-radius:10px;background:rgba(15,124,124,0.1);
+  display:flex;align-items:center;justify-content:center;color:var(--teal);flex-shrink:0;font-size:18px;
+}
+.flexbar p{font-size:13.5px;color:var(--grey);margin:0;}
+.flexbar strong{color:var(--charcoal);}
+
+/* ---------- SECTIONS / ROWS ---------- */
+.row{margin-bottom:48px;}
+.row__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.row__title{display:flex;align-items:center;gap:10px;font-size:22px;}
+.row__nav{display:flex;gap:8px;}
+.row__nav button{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--paper);
+  display:flex;align-items:center;justify-content:center;color:var(--ink);transition:background 0.15s ease;
+}
+.row__nav button:hover{background:var(--porcelain);}
+
+.scroller{
+  display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;
+  scrollbar-width:none;
+}
+.scroller::-webkit-scrollbar{display:none;}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+@media(min-width:720px){.grid4{grid-template-columns:repeat(4,1fr);}}
+
+/* ---------- CARD ---------- */
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;flex:0 0 220px;scroll-snap-align:start;display:flex;flex-direction:column;
+  transition:box-shadow 0.15s ease, transform 0.15s ease;
+}
+.grid4 .card{flex-basis:auto;}
+.card:hover{box-shadow:0 12px 28px rgba(11,31,58,0.1);transform:translateY(-2px);}
+.card__media{position:relative;aspect-ratio:1/1;background:var(--porcelain);}
+.card__media img{width:100%;height:100%;object-fit:cover;}
+.card__badge{
+  position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:700;letter-spacing:0.04em;
+  padding:4px 9px;border-radius:999px;color:#fff;
+}
+.card__badge.flash{background:var(--coral);}
+.card__badge.new{background:var(--teal);}
+.card__badge.clearance{background:var(--gold);color:var(--ink);}
+.wish{
+  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:var(--coral);
+}
+.card__body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.card__name{font-size:13.5px;font-weight:600;line-height:1.3;color:var(--charcoal);min-height:35px;}
+.card__rating{font-size:11.5px;color:var(--grey);display:flex;align-items:center;gap:5px;}
+.card__rating .stars{color:var(--gold);letter-spacing:1px;}
+.card__price{display:flex;align-items:baseline;gap:8px;margin-top:2px;}
+.card__price .now{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:16px;color:var(--ink);}
+.card__price .old{font-family:'IBM Plex Mono',monospace;font-size:12px;text-decoration:line-through;color:var(--grey);}
+.card__pay{font-size:11px;color:var(--teal);font-weight:600;}
+.card__timer{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--coral);font-weight:600;
+  display:flex;align-items:center;gap:5px;
+}
+.card__cta{
+  margin-top:auto;width:100%;background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;
+  padding:10px;border-radius:999px;text-align:center;transition:background 0.15s ease;
+}
+.card__cta:hover{background:var(--teal-dark);}
+
+/* ---------- APP BANNER ---------- */
+.appbanner{
+  background:var(--teal);color:#fff;border-radius:20px;padding:36px;text-align:center;margin-bottom:56px;
+}
+.appbanner h2{font-size:clamp(22px,3.4vw,32px);margin-bottom:10px;}
+.appbanner p{font-size:14px;opacity:0.9;margin-bottom:20px;}
+.appbanner .btn{background:#fff;color:var(--ink);}
+.appbanner .btn:hover{background:var(--gold);color:var(--ink);}
+
+/* ---------- FOOTER ---------- */
+footer.site{background:var(--ink);color:#D9E3E3;padding:48px 0 24px;}
+.foot__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-bottom:32px;}
+@media(min-width:720px){.foot__grid{grid-template-columns:repeat(4,1fr);}}
+.foot__grid h4{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:0.04em;margin-bottom:14px;text-transform:uppercase;}
+.foot__grid a{display:block;font-size:13px;color:#AEC2C2;margin-bottom:9px;}
+.foot__grid a:hover{color:#fff;}
+.foot__bottom{
+  border-top:1px solid rgba(255,255,255,0.12);padding-top:20px;display:flex;flex-wrap:wrap;
+  gap:12px;justify-content:space-between;font-size:12px;color:#8FA3A3;
+}
+
+/* ---------- TOAST ---------- */
+#toast-root{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
+}
+.toast{
+  background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 22px;
+  border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,0.25);
+  opacity:0;transform:translateY(10px);transition:opacity 0.2s ease, transform 0.2s ease;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+
+.section-title{font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="tickerTrack"></div>
+</div>
+
+<header class="site">
+  <div class="header__bar">
+    <div class="logo">AUREA <span>Live Shopping</span></div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="text" placeholder="Rechercher un produit, une marque…" aria-label="Rechercher un produit">
+    </div>
+    <div class="header__actions">
+      <button class="icon-btn" id="wishHeaderBtn" aria-label="Favoris">♡ <span class="hide-sm">Favoris</span></button>
+      <button class="icon-btn" aria-label="Panier">🛍 <span class="hide-sm">Panier</span> <span class="cart-count mono" id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="cats">
+  <div class="cats__track" id="navPills">
+    <a href="#flash" class="cats__pill" data-target="flash">Ventes Flash</a>
+    <a href="#beauty" class="cats__pill" data-target="beauty">Beauté</a>
+    <a href="#jewelry" class="cats__pill" data-target="jewelry">Bijoux</a>
+    <a href="#home" class="cats__pill" data-target="home">Maison</a>
+    <a href="#" class="cats__pill" id="clearancePill">Déstockage</a>
+  </div>
+</nav>
+
+<div class="filter-banner" id="filterBanner">
+  Affichage des articles en déstockage uniquement — <button id="clearFilter">réinitialiser</button>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__media">
+        <span class="hero__badge">L'OFFRE DU JOUR</span>
+        <img src="https://picsum.photos/seed/ring1/700/700" alt="Bague Halo Diamant Aurora">
+      </div>
+      <div class="hero__info">
+        <div class="hero__eyebrow"><span class="dot-live" style="background:var(--gold)"></span> En direct maintenant</div>
+        <h1 class="hero__title">Bague Halo Diamant Aurora</h1>
+        <div class="hero__price">
+          <span class="now mono">349,00 €</span>
+          <span class="old mono">899,00 €</span>
+        </div>
+        <p class="hero__pay">ou 5 paiements de <strong>69,80 €</strong> sans frais</p>
+        <div class="hero__timer">
+          <span class="label">Fin de l'offre</span>
+          <span class="clock mono" data-end-hours="2.24">--:--:--</span>
+        </div>
+        <br>
+        <button class="btn" data-add="Bague Halo Diamant Aurora" id="heroAdd">Ajouter au panier</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="railwrap">
+    <div class="rail" id="categoryRail">
+      <button class="rail__item" data-target="beauty"><span class="rail__circle">💄</span><span class="rail__label">Beauté</span></button>
+      <button class="rail__item" data-target="jewelry"><span class="rail__circle">💍</span><span class="rail__label">Bijoux</span></button>
+      <button class="rail__item" data-target="home"><span class="rail__circle">🏠</span><span class="rail__label">Maison</span></button>
+      <button class="rail__item" data-soon><span class="rail__circle">🍳</span><span class="rail__label">Cuisine</span></button>
+      <button class="rail__item" data-soon><span class="rail__circle">👜</span><span class="rail__label">Mode</span></button>
+      <button class="rail__item" data-soon><span class="rail__circle">🔌</span><span class="rail__label">Électronique</span></button>
+      <button class="rail__item" data-soon><span class="rail__circle">🌿</span><span class="rail__label">Bien-être</span></button>
+      <button class="rail__item" data-soon><span class="rail__circle">✨</span><span class="rail__label">Nouveautés</span></button>
+    </div>
+  </section>
+
+  <div class="flexbar">
+    <div class="flexbar__icon">💳</div>
+    <p><strong>Paiement flexible</strong> — divisez n'importe quelle commande en plusieurs fois, sans intérêt, sur AUREA.</p>
+  </div>
+
+  <section class="row" id="flash">
+    <div class="row__head">
+      <h2 class="row__title"><span class="dot-live"></span> Ventes Flash</h2>
+    </div>
+    <div class="grid4" id="rowFlash"></div>
+  </section>
+
+  <section class="row" id="beauty">
+    <div class="row__head">
+      <div><div class="section-title">En direct</div><h2 class="row__title">Beauté</h2></div>
+      <div class="row__nav"><button data-scroll="rowBeauty" data-dir="-1" aria-label="précédent">‹</button><button data-scroll="rowBeauty" data-dir="1" aria-label="suivant">›</button></div>
+    </div>
+    <div class="scroller" id="rowBeauty"></div>
+  </section>
+
+  <section class="row" id="jewelry">
+    <div class="row__head">
+      <div><div class="section-title">En direct</div><h2 class="row__title">Bijoux</h2></div>
+      <div class="row__nav"><button data-scroll="rowJewelry" data-dir="-1" aria-label="précédent">‹</button><button data-scroll="rowJewelry" data-dir="1" aria-label="suivant">›</button></div>
+    </div>
+    <div class="scroller" id="rowJewelry"></div>
+  </section>
+
+  <section class="row" id="home">
+    <div class="row__head">
+      <div><div class="section-title">En direct</div><h2 class="row__title">Maison</h2></div>
+      <div class="row__nav"><button data-scroll="rowHome" data-dir="-1" aria-label="précédent">‹</button><button data-scroll="rowHome" data-dir="1" aria-label="suivant">›</button></div>
+    </div>
+    <div class="scroller" id="rowHome"></div>
+  </section>
+
+  <p id="noResults" style="display:none;text-align:center;color:var(--grey);padding:40px 0;">Aucun produit ne correspond à votre recherche.</p>
+
+  <section class="appbanner">
+    <h2>Téléchargez l'app AUREA</h2>
+    <p>Recevez une alerte dès qu'une offre en direct commence, où que vous soyez.</p>
+    <button class="btn" id="appBtn">Obtenir l'app</button>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <h4>Aide</h4>
+        <a href="#">Suivre ma commande</a>
+        <a href="#">Retours &amp; échanges</a>
+        <a href="#">Paiement flexible</a>
+        <a href="#">Contacter le service client</a>
+      </div>
+      <div>
+        <h4>AUREA</h4>
+        <a href="#">À propos</a>
+        <a href="#">Carrières</a>
+        <a href="#">Programme fidélité</a>
+        <a href="#">Vendre sur AUREA</a>
+      </div>
+      <div>
+        <h4>Catégories</h4>
+        <a href="#beauty">Beauté</a>
+        <a href="#jewelry">Bijoux</a>
+        <a href="#home">Maison</a>
+        <a href="#flash">Ventes flash</a>
+      </div>
+      <div>
+        <h4>Suivez-nous</h4>
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">Pinterest</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="foot__bottom">
+      <span>© 2026 AUREA Live Shopping. Site de démonstration — toutes les images sont des placeholders.</span>
+      <span>Confidentialité · Conditions générales · Cookies</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast-root"></div>
+
+<script>
+const PRODUCTS = [
+  {id:1,name:"Friteuse à air Pro-Air 8L",cat:"flash",price:79.99,old:159.99,pay:4,rating:4.6,reviews:1287,seed:"airfryer1",badge:"flash",badgeLabel:"FLASH",hours:3.5},
+  {id:2,name:"Montre Chrono Aurora",cat:"flash",price:64.50,old:139.00,pay:3,rating:4.3,reviews:542,seed:"watch1",badge:"flash",badgeLabel:"FLASH",hours:5.1},
+  {id:3,name:"Sac Week-end Matelassé",cat:"flash",price:49.99,old:98.00,pay:2,rating:4.7,reviews:903,seed:"bag1",badge:"flash",badgeLabel:"FLASH",hours:2.25},
+  {id:4,name:"Plaid Sherpa Grand Format",cat:"flash",price:34.99,old:69.99,pay:2,rating:4.8,reviews:2110,seed:"blanket1",badge:"flash",badgeLabel:"FLASH",hours:6.75},
+
+  {id:5,name:"Sérum Réparateur Nuit",cat:"beauty",price:38.00,old:62.00,pay:2,rating:4.5,reviews:1654,seed:"serum1",badge:"new",badgeLabel:"NOUVEAU",hours:9},
+  {id:6,name:"Palette Yeux Velvet 12 Teintes",cat:"beauty",price:29.50,old:48.00,pay:2,rating:4.4,reviews:980,seed:"palette1",badge:null,hours:9},
+  {id:7,name:"Set Rouleau Visage Quartz Rose",cat:"beauty",price:22.00,old:36.00,pay:1,rating:4.6,reviews:712,seed:"roller1",badge:null,hours:9},
+  {id:8,name:"Duo Vitamine C Hydra-Éclat",cat:"beauty",price:44.00,old:70.00,pay:2,rating:4.7,reviews:1330,seed:"vitc1",badge:"clearance",badgeLabel:"DÉSTOCKAGE",hours:9},
+  {id:9,name:"Serviettes Cheveux Soie x2",cat:"beauty",price:18.00,old:28.00,pay:1,rating:4.5,reviews:451,seed:"towel1",badge:null,hours:9},
+
+  {id:11,name:"Trio Bagues Dorées Empilables",cat:"jewelry",price:89.00,old:175.00,pay:3,rating:4.6,reviews:614,seed:"ring2",badge:null,hours:9},
+  {id:12,name:"Bracelet Tennis Zircon",cat:"jewelry",price:129.00,old:310.00,pay:4,rating:4.7,reviews:389,seed:"bracelet1",badge:"flash",badgeLabel:"FLASH",hours:1.8,clearance:true},
+  {id:13,name:"Boucles d'Oreilles Perles",cat:"jewelry",price:54.00,old:90.00,pay:2,rating:4.5,reviews:276,seed:"earrings1",badge:null,hours:9},
+  {id:14,name:"Set Colliers Pendentifs Superposés",cat:"jewelry",price:68.00,old:120.00,pay:3,rating:4.4,reviews:198,seed:"necklace1",badge:"new",badgeLabel:"NOUVEAU",hours:9},
+
+  {id:15,name:"Batterie Cuisine Céramique 10pc",cat:"home",price:149.00,old:289.00,pay:5,rating:4.8,reviews:1042,seed:"cookware1",badge:"clearance",badgeLabel:"DÉSTOCKAGE",hours:4.4,clearance:true},
+  {id:16,name:"Parure de Lit Lin Mélangé, Queen",cat:"home",price:79.00,old:140.00,pay:3,rating:4.6,reviews:533,seed:"bedding1",badge:null,hours:9},
+  {id:17,name:"Lampe de Table Céramique Sculptée",cat:"home",price:59.00,old:99.00,pay:2,rating:4.5,reviews:215,seed:"lamp1",badge:null,hours:9},
+  {id:18,name:"Tapis Laine Noué à la Main",cat:"home",price:189.00,old:340.00,pay:5,rating:4.7,reviews:301,seed:"rug1",badge:"new",badgeLabel:"NOUVEAU",hours:9,clearance:true},
+  {id:19,name:"Blender Comptoir 6 Vitesses",cat:"home",price:69.00,old:119.00,pay:3,rating:4.6,reviews:874,seed:"blender1",badge:null,hours:9},
+];
+
+function euros(n){ return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €'; }
+function stars(rating){
+  const full = Math.round(rating);
+  return '★'.repeat(full) + '☆'.repeat(5-full);
+}
+
+function cardHTML(p){
+  const endTs = Date.now() + p.hours*3600*1000;
+  const badge = p.badge ? `<span class="card__badge ${p.badge}">${p.badgeLabel}</span>` : '';
+  return `
+  <article class="card ${p.clearance ? 'is-clearance' : ''}" data-name="${p.name.toLowerCase()}">
+    <div class="card__media">
+      ${badge}
+      <button class="wish" data-wish aria-label="Ajouter aux favoris">♡</button>
+      <img src="https://picsum.photos/seed/${p.seed}/420/420" alt="${p.name}" loading="lazy">
+    </div>
+    <div class="card__body">
+      <div class="card__name">${p.name}</div>
+      <div class="card__rating"><span class="stars">${stars(p.rating)}</span> ${p.rating} (${p.reviews})</div>
+      <div class="card__price"><span class="now mono">${euros(p.price)}</span><span class="old mono">${euros(p.old)}</span></div>
+      <div class="card__pay">${p.pay} paiements de ${euros(p.price/p.pay)}</div>
+      <div class="card__timer">⏱ <span data-end="${endTs}">--:--:--</span></div>
+      <button class="card__cta" data-add="${p.name}">Ajouter</button>
+    </div>
+  </article>`;
+}
+
+function mount(){
+  document.getElementById('rowFlash').innerHTML = PRODUCTS.filter(p=>p.cat==='flash').map(cardHTML).join('');
+  document.getElementById('rowBeauty').innerHTML = PRODUCTS.filter(p=>p.cat==='beauty').map(cardHTML).join('');
+  document.getElementById('rowJewelry').innerHTML = PRODUCTS.filter(p=>p.cat==='jewelry').map(cardHTML).join('');
+  document.getElementById('rowHome').innerHTML = PRODUCTS.filter(p=>p.cat==='home').map(cardHTML).join('');
+}
+mount();
+
+/* ---- ticker content ---- */
+const tickerItems = [
+  '🔴 EN DIRECT — Bague Halo Diamant Aurora, −61%',
+  '⚡ VENTE FLASH — Friteuse à air Pro-Air, aujourd\\'hui seulement',
+  '🚚 Livraison gratuite dès 50 € d\\'achat',
+  '💳 Paiement flexible — 0% d\\'intérêt, toujours',
+  '🆕 Nouveautés ajoutées chaque heure',
+];
+const track = document.getElementById('tickerTrack');
+const fullList = [...tickerItems, ...tickerItems];
+track.innerHTML = fullList.map(t => `<span class="ticker__item">${t}</span>`).join('<span class="ticker__item">●</span>');
+
+/* ---- countdowns ---- */
+function formatHMS(ms){
+  if(ms <= 0) return 'TERMINÉ';
+  const s = Math.floor(ms/1000);
+  const h = String(Math.floor(s/3600)).padStart(2,'0');
+  const m = String(Math.floor((s%3600)/60)).padStart(2,'0');
+  const sec = String(s%60).padStart(2,'0');
+  return `${h}:${m}:${sec}`;
+}
+function tickClocks(){
+  document.querySelectorAll('[data-end]').forEach(el=>{
+    const end = parseInt(el.dataset.end,10);
+    el.textContent = formatHMS(end - Date.now());
+  });
+  document.querySelectorAll('[data-end-hours]').forEach(el=>{
+    if(!el.dataset.endTs){ el.dataset.endTs = Date.now() + parseFloat(el.dataset.endHours)*3600*1000; }
+    el.textContent = formatHMS(parseFloat(el.dataset.endTs) - Date.now());
+  });
+}
+tickClocks();
+setInterval(tickClocks, 1000);
+
+/* ---- toast ---- */
+function showToast(msg){
+  const root = document.getElementById('toast-root');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  root.appendChild(t);
+  requestAnimationFrame(()=> t.classList.add('show'));
+  setTimeout(()=>{
+    t.classList.remove('show');
+    setTimeout(()=> t.remove(), 250);
+  }, 2000);
+}
+
+/* ---- cart ---- */
+let cartCount = 0;
+const cartCountEl = document.getElementById('cartCount');
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-add]');
+  if(!btn) return;
+  cartCount++;
+  cartCountEl.textContent = cartCount;
+  cartCountEl.classList.add('bump');
+  setTimeout(()=> cartCountEl.classList.remove('bump'), 220);
+  showToast(`Ajouté au panier ✓ — ${btn.dataset.add}`);
+});
+
+/* ---- wishlist toggle ---- */
+document.addEventListener('click', (e)=>{
+  const w = e.target.closest('[data-wish]');
+  if(!w) return;
+  const active = w.textContent.includes('♥');
+  w.textContent = active ? '♡' : '♥';
+  w.style.color = active ? 'var(--coral)' : '#fff';
+  w.style.background = active ? 'rgba(255,255,255,0.92)' : 'var(--coral)';
+});
+
+/* ---- nav pills: scroll + active state ---- */
+const pills = document.querySelectorAll('.cats__pill[data-target]');
+pills.forEach(p=>{
+  p.addEventListener('click', (e)=>{
+    e.preventDefault();
+    pills.forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    document.getElementById(p.dataset.target).scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+/* ---- category rail: scroll or "coming soon" ---- */
+document.querySelectorAll('#categoryRail .rail__item').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.dataset.target){
+      document.getElementById(btn.dataset.target).scrollIntoView({behavior:'smooth', block:'start'});
+    } else {
+      showToast('Bientôt disponible sur AUREA ✨');
+    }
+  });
+});
+
+/* ---- row arrow scroll ---- */
+document.querySelectorAll('[data-scroll]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const el = document.getElementById(btn.dataset.scroll);
+    const dir = parseInt(btn.dataset.dir,10);
+    el.scrollBy({left: dir*260, behavior:'smooth'});
+  });
+});
+
+/* ---- clearance filter ---- */
+const clearancePill = document.getElementById('clearancePill');
+const filterBanner = document.getElementById('filterBanner');
+clearancePill.addEventListener('click', (e)=>{
+  e.preventDefault();
+  document.body.classList.add('filter-clearance');
+  filterBanner.classList.add('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('clearFilter').addEventListener('click', ()=>{
+  document.body.classList.remove('filter-clearance');
+  filterBanner.classList.remove('show');
+});
+
+/* ---- search filter ---- */
+const searchInput = document.getElementById('searchInput');
+const noResults = document.getElementById('noResults');
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  let visibleCount = 0;
+  document.querySelectorAll('.card').forEach(card=>{
+    const match = !q || card.dataset.name.includes(q);
+    card.style.display = match ? '' : 'none';
+    if(match) visibleCount++;
+  });
+  noResults.style.display = (q && visibleCount === 0) ? 'block' : 'none';
+});
+
+/* ---- header heart shortcut ---- */
+document.getElementById('wishHeaderBtn').addEventListener('click', ()=>{
+  showToast('Vos favoris apparaîtront ici ♡');
+});
+document.getElementById('appBtn').addEventListener('click', ()=>{
+  showToast('Lien de téléchargement envoyé ✓ (démo)');
+});
+</script>
+</body>
+</html>
