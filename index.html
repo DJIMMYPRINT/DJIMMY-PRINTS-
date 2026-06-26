@@ -478,31 +478,6 @@ footer.site{background:var(--ink);color:#D9E3E3;padding:48px 0 24px;}
 
 <div id="toast-root"></div>
 
-<script>
-const PRODUCTS = [
-  {id:1,name:"Friteuse à air Pro-Air 8L",cat:"flash",price:79.99,old:159.99,pay:4,rating:4.6,reviews:1287,seed:"airfryer1",badge:"flash",badgeLabel:"FLASH",hours:3.5},
-  {id:2,name:"Montre Chrono Aurora",cat:"flash",price:64.50,old:139.00,pay:3,rating:4.3,reviews:542,seed:"watch1",badge:"flash",badgeLabel:"FLASH",hours:5.1},
-  {id:3,name:"Sac Week-end Matelassé",cat:"flash",price:49.99,old:98.00,pay:2,rating:4.7,reviews:903,seed:"bag1",badge:"flash",badgeLabel:"FLASH",hours:2.25},
-  {id:4,name:"Plaid Sherpa Grand Format",cat:"flash",price:34.99,old:69.99,pay:2,rating:4.8,reviews:2110,seed:"blanket1",badge:"flash",badgeLabel:"FLASH",hours:6.75},
-
-  {id:5,name:"Sérum Réparateur Nuit",cat:"beauty",price:38.00,old:62.00,pay:2,rating:4.5,reviews:1654,seed:"serum1",badge:"new",badgeLabel:"NOUVEAU",hours:9},
-  {id:6,name:"Palette Yeux Velvet 12 Teintes",cat:"beauty",price:29.50,old:48.00,pay:2,rating:4.4,reviews:980,seed:"palette1",badge:null,hours:9},
-  {id:7,name:"Set Rouleau Visage Quartz Rose",cat:"beauty",price:22.00,old:36.00,pay:1,rating:4.6,reviews:712,seed:"roller1",badge:null,hours:9},
-  {id:8,name:"Duo Vitamine C Hydra-Éclat",cat:"beauty",price:44.00,old:70.00,pay:2,rating:4.7,reviews:1330,seed:"vitc1",badge:"clearance",badgeLabel:"DÉSTOCKAGE",hours:9},
-  {id:9,name:"Serviettes Cheveux Soie x2",cat:"beauty",price:18.00,old:28.00,pay:1,rating:4.5,reviews:451,seed:"towel1",badge:null,hours:9},
-
-  {id:11,name:"Trio Bagues Dorées Empilables",cat:"jewelry",price:89.00,old:175.00,pay:3,rating:4.6,reviews:614,seed:"ring2",badge:null,hours:9},
-  {id:12,name:"Bracelet Tennis Zircon",cat:"jewelry",price:129.00,old:310.00,pay:4,rating:4.7,reviews:389,seed:"bracelet1",badge:"flash",badgeLabel:"FLASH",hours:1.8,clearance:true},
-  {id:13,name:"Boucles d'Oreilles Perles",cat:"jewelry",price:54.00,old:90.00,pay:2,rating:4.5,reviews:276,seed:"earrings1",badge:null,hours:9},
-  {id:14,name:"Set Colliers Pendentifs Superposés",cat:"jewelry",price:68.00,old:120.00,pay:3,rating:4.4,reviews:198,seed:"necklace1",badge:"new",badgeLabel:"NOUVEAU",hours:9},
-
-  {id:15,name:"Batterie Cuisine Céramique 10pc",cat:"home",price:149.00,old:289.00,pay:5,rating:4.8,reviews:1042,seed:"cookware1",badge:"clearance",badgeLabel:"DÉSTOCKAGE",hours:4.4,clearance:true},
-  {id:16,name:"Parure de Lit Lin Mélangé, Queen",cat:"home",price:79.00,old:140.00,pay:3,rating:4.6,reviews:533,seed:"bedding1",badge:null,hours:9},
-  {id:17,name:"Lampe de Table Céramique Sculptée",cat:"home",price:59.00,old:99.00,pay:2,rating:4.5,reviews:215,seed:"lamp1",badge:null,hours:9},
-  {id:18,name:"Tapis Laine Noué à la Main",cat:"home",price:189.00,old:340.00,pay:5,rating:4.7,reviews:301,seed:"rug1",badge:"new",badgeLabel:"NOUVEAU",hours:9,clearance:true},
-  {id:19,name:"Blender Comptoir 6 Vitesses",cat:"home",price:69.00,old:119.00,pay:3,rating:4.6,reviews:874,seed:"blender1",badge:null,hours:9},
-];
-
 function euros(n){ return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €'; }
 function stars(rating){
   const full = Math.round(rating);
